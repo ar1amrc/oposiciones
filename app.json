@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "oposiciones",
+    "slug": "oposiciones",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f05fd712-b866-4b51-853b-5d06222b58fd"
+      }
+    }
+  }
+}
