@@ -1,6 +1,6 @@
 {
   "name": "oposiciones",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "start": "expo start --dev-client",
@@ -9,12 +9,13 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.5",
     "@expo/webpack-config": "^18.1.2",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "expo": "^49.0.5",
     "expo-asset": "~8.10.1",
-    "expo-dev-client": "~2.4.11",
+    "expo-dev-client": "~2.4.13",
     "expo-file-system": "~15.4.3",
     "expo-splash-screen": "~0.20.5",
     "expo-sqlite": "~11.3.2",
