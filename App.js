@@ -47,7 +47,7 @@ export default function App() {
     //     )
     // } 
 
-    return  <Navigation ></Navigation>
+    return  <Navigation />
 }
 
 const styles = StyleSheet.create({
