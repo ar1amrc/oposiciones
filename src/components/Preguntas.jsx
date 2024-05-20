@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  FlatList,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import StyledText from "./StyledText";
-import Respuestas from "./Respuestas";
-import { getPregunta, getUser, updateStatsUser } from "../database/db";
+import Opcion from "./Opcion";
+import StyledButton from "./StyledButton";
 import theme from "../theme";
-import { useRoute } from "@react-navigation/native";
+import { getPregunta, getUser, updateStatsUser } from "../database/db";
+import { useRoute, useNavigation } from "@react-navigation/native";
+
+function randomNumber() {
+  return Math.floor(Math.random() * 400 + 1);
+}
 
 const Preguntas = () => {
   const [pregunta, setPregunta] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSelected, setIsSelected] = useState(false);
-  const [correcta, setCorrecta] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const [user, setUser] = useState(undefined);
+  const navigation = useNavigation();
 
   const {
     params: { preguntaId },
@@ -32,17 +29,35 @@ const Preguntas = () => {
 
   const press = () => {
     if (!isSelected) return;
-    setIsLoading(true);
-    setCorrecta(true);
+    // setIsLoading(true);
+    setIsPressed(true);
 
-    pregunta.respuesta == isSelected ? user.correctas++ : user.fallidas++;
+    if (pregunta.respuesta == isSelected) {
+      user.correctas++;
+    } else {
+      user.fallidas++;
+    }
+    //pregunta.respuesta == isSelected ? user.correctas++ : user.fallidas++;
     user.porciento = (user.correctas * 100) / (user.correctas + user.fallidas);
     updateStatsUser(user.correctas, user.fallidas, user.porciento);
   };
 
+  const color = (key) => {
+    if (key == pregunta.respuesta) return styles.ok;
+    if (key != pregunta.respuesta && key == isSelected) return styles.wrong;
+    else return styles.white;
+  };
+
+  const next = () => {
+    let pp = user.random ? randomNumber() : pregunta.id + 1;
+    if (pp > 400) pp = 1;
+
+    navigation.navigate("Main", { preguntaId: pp });
+  };
+
   useEffect(() => {
     setIsSelected(false);
-    setCorrecta(false);
+    setIsPressed(false);
     getUser(1).then((value) => {
       setUser(value);
     });
@@ -52,95 +67,84 @@ const Preguntas = () => {
     });
   }, [preguntaId]);
 
-  if (correcta) {
-    return (
-      <Respuestas
-        pregunta={pregunta}
-        selected={isSelected}
-        random={user.random}
-      />
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <View style={styles.margin}>
-        <StyledText fontSize="title" fontWeight="bold" style={styles.pregunta}>
-          Cargando...
-        </StyledText>
-      </View>
-    );
-  }
-
   return (
-    <View style={styles.margin} key={pregunta.id}>
-      <ScrollView
-        style={{ marginVertical: 10 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={{ marginBottom: 8 }}>
-          <StyledText
-            fontSize="title"
-            fontWeight="bold"
-            style={styles.pregunta}
-          >
-            {pregunta.pregunta}
-          </StyledText>
+    <View style={styles.margin}>
+      {isLoading ? (
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <ActivityIndicator size="large" />
         </View>
-
-        <Pressable
-          key="a"
-          onPress={() => add("a")}
-          style={[
-            styles.container,
-            isSelected == "a" ? styles.selected : styles.white,
-          ]}
+      ) : (
+        <ScrollView
+        key={pregunta.id}
+          style={{ marginVertical: 10 }}
+          showsVerticalScrollIndicator={false}
         >
-          <StyledText style={styles.texto}>{"a. " + pregunta.a}</StyledText>
-        </Pressable>
-
-        <Pressable
-          key="b"
-          onPress={() => add("b")}
-          style={[
-            styles.container,
-            isSelected == "b" ? styles.selected : styles.white,
-          ]}
-        >
-          <StyledText style={styles.texto}>{"b. " + pregunta.b}</StyledText>
-        </Pressable>
-
-        <Pressable
-          key="c"
-          onPress={() => add("c")}
-          style={[
-            styles.container,
-            isSelected == "c" ? styles.selected : styles.white,
-          ]}
-        >
-          <StyledText style={styles.texto}>{"c. " + pregunta.c}</StyledText>
-        </Pressable>
-
-        <View style={styles.fixToText}>
-          <Pressable
-            onPress={press}
-            style={({ pressed }) => [
-              {
-                backgroundColor: pressed ? "rgb(210, 230, 255)" : "white",
-              },
-              styles.wrapperCustom,
-            ]}
-          >
+          <View style={{ marginBottom: 8 }}>
             <StyledText
-              fontSize="subheading"
+              fontSize="title"
               fontWeight="bold"
               style={styles.pregunta}
             >
-              Comprobar
+              {pregunta.pregunta}
             </StyledText>
-          </Pressable>
-        </View>
-      </ScrollView>
+          </View>
+          {isPressed ? (
+            <>
+              <Opcion
+                llave={"a"}
+                opcion={pregunta.a}
+                isSelected={isSelected}
+                add={add}
+                color={color}
+                disabled={true}
+              />
+              <Opcion
+                llave={"b"}
+                opcion={pregunta.b}
+                isSelected={isSelected}
+                add={add}
+                color={color}
+                disabled={true}
+              />
+              <Opcion
+                llave={"c"}
+                opcion={pregunta.c}
+                isSelected={isSelected}
+                add={add}
+                color={color}
+                disabled={true}
+              />
+            </>
+          ) : (
+            <>
+              <Opcion
+                llave={"a"}
+                opcion={pregunta.a}
+                isSelected={isSelected}
+                add={add}
+              />
+              <Opcion
+                llave={"b"}
+                opcion={pregunta.b}
+                isSelected={isSelected}
+                add={add}
+              />
+              <Opcion
+                llave={"c"}
+                opcion={pregunta.c}
+                isSelected={isSelected}
+                add={add}
+              />
+            </>
+          )}
+
+          {isPressed ? (
+            <StyledButton text={"Siguiente"} pressFn={next} />
+          ) : (
+            <StyledButton text={"Comprobar"} pressFn={press} />
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -168,6 +172,12 @@ const styles = StyleSheet.create({
   },
   white: {
     backgroundColor: theme.colors.lightWhite,
+  },
+  wrong: {
+    backgroundColor: theme.colors.wrong,
+  },
+  ok: {
+    backgroundColor: theme.colors.ok,
   },
   selected: {
     backgroundColor: "#5DADE2",

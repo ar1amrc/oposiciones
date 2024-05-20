@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Navigation from './src/wrappers/Navigation';
 import { createDatabase } from './src/database/db';
 import { StyleSheet, View } from 'react-native';
-import StyledText from './src/components/StyledText';
 import * as SplashScreen from 'expo-splash-screen';
 
 export default function App() {
