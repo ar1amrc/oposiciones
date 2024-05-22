@@ -3,6 +3,7 @@ import Navigation from './src/wrappers/Navigation';
 import { createDatabase } from './src/database/db';
 import { StyleSheet, View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import { Provider } from './src/context/user';
 
 export default function App() {
 
@@ -46,7 +47,7 @@ export default function App() {
     //     )
     // } 
 
-    return  <Navigation />
+    return  <Provider><Navigation /></Provider>
 }
 
 const styles = StyleSheet.create({

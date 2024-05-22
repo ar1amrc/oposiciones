@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Alert,
   Image,
@@ -10,32 +10,22 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getUser, updateNameUser, updateRandomUser, updateStatsUser } from "../database/db";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import StyledText from "../components/StyledText";
+import { UserContext } from "../context/user";
 
 const Settings = () => {
-  const [user, setUser] = useState(undefined);
-  const [currentName, setCurrentName] = useState(" ");
+  const {state:user, updateStatsUser, updateRandomUser, updateNameUser,resetStatsUser} = useContext(UserContext)
+  const [currentName, setCurrentName] = useState(user.nombre);
   const [edit, setEdit] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(user.random == 1 ? true : false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    async function fetchUser() {
-      const userf = await getUser(1);
-      setUser(userf);
-      setCurrentName(userf.nombre);
-      setIsEnabled(userf.random == 1 ? true : false);
-    }
-    fetchUser();
-  }, []);
-
   const resetStats = () => { 
-    setUser(prevState=> {
-      return { ...prevState, correctas:0, fallidas:0, porciento:0}
-    })
-    updateStatsUser(0,0,0)
+    // setUser(prevState=> {
+    //   return { ...prevState, correctas:0, fallidas:0, porciento:0}
+    // })
+    resetStatsUser()
   }
 
   const toggleSwitch = () => {
@@ -73,6 +63,7 @@ const Settings = () => {
                 value={currentName}
                 placeholder="Usuario"
                 onChangeText={setCurrentName}
+                onEndEditing={update}
                 style={styles.textInput}
               />
               <Pressable onPress={() => update()}>

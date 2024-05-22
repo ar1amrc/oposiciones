@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,40 +10,36 @@ import StyledText from "./StyledText";
 import Opcion from "./Opcion";
 import StyledButton from "./StyledButton";
 import theme from "../theme";
-import { getPregunta, getUser, updateStatsUser } from "../database/db";
+import { getPregunta, getUser } from "../database/db";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import { UserContext } from "../context/user";
 
 function randomNumber() {
   return Math.floor(Math.random() * 540 + 1);
 }
-
+const initialState = {isLoading: true, isPressed:false, isSelected:false}
 const Preguntas = () => {
   const [pregunta, setPregunta] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSelected, setIsSelected] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-  const [user, setUser] = useState(undefined);
+  const [states, setStates] = useState(initialState);
+  const {isLoading, isSelected, isPressed} = states
   const navigation = useNavigation();
+  const {state:user, updateStatsUser} = useContext(UserContext)
 
+console.log(isLoading, isSelected, isPressed);
   const {
     params: { preguntaId },
   } = useRoute();
 
   const add = (key) => {
-    setIsSelected(key);
+    const newState = {...states, isSelected: key } 
+    setStates(newState);
   };
 
   const press = () => {
     if (!isSelected) return;
-    setIsPressed(true);
-
-    if (pregunta.respuesta == isSelected) {
-      user.correctas++;
-    } else {
-      user.fallidas++;
-    }
-    user.porciento = (user.correctas * 100) / (user.correctas + user.fallidas);
-    updateStatsUser(user.correctas, user.fallidas, user.porciento);
+    const newState = {...states, isPressed: true } 
+    setStates(newState);
+    updateStatsUser(pregunta.respuesta == isSelected);
   };
 
   const color = (key) => {
@@ -59,14 +55,10 @@ const Preguntas = () => {
   };
 
   useEffect(() => {
-    setIsSelected(false);
-    setIsPressed(false);
-    getUser(1).then((value) => {
-      setUser(value);
-    });
     getPregunta(preguntaId).then((value) => {
       setPregunta(value);
-      setIsLoading(false);
+      const newState = { isLoading: false, isPressed: false, isSelected: false } 
+      setStates(newState);
     });
   }, [preguntaId]);
 
@@ -97,6 +89,7 @@ const Preguntas = () => {
                 .slice(2, 6)
                 .map(([keys, value], index) => (
                   <Opcion
+                    key={index}
                     llave={keys.toUpperCase()}
                     opcion={value}
                     isSelected={isSelected}
@@ -114,6 +107,7 @@ const Preguntas = () => {
                 .slice(2, 6)
                 .map(([keys, value], index) => (
                   <Opcion
+                    key={index}
                     llave={keys.toUpperCase()}
                     opcion={value}
                     isSelected={isSelected}
