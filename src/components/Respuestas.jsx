@@ -3,8 +3,10 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
+  VirtualizedList,
 } from "react-native";
 import StyledText from "./StyledText";
 import theme from "../theme";
@@ -14,9 +16,24 @@ function randomNumber() {
   return Math.floor(Math.random() * 400 + 1);
 }
 
+// const Item = ({title}) => (
+//   <View style={styles.item}>
+//     <Text style={styles.title}>{title}</Text>
+//   </View>
+// );
+
+// const getItem = (_data, index) => {
+//   console.log(_data, index);
+//   return ({
+//   id: Math.random().toString(12).substring(0),
+//   title: `Item ${index + 1}`,
+// })
+// };
+
+// const getItemCount = _data => 4;
+
 const Respuestas = ({ pregunta, selected, random }) => {
   const navigation = useNavigation();
-
   const color = (key) => {
     if (key == pregunta.respuesta) return styles.ok;
     if (key != pregunta.respuesta && key == selected) return styles.wrong;
@@ -29,6 +46,8 @@ const Respuestas = ({ pregunta, selected, random }) => {
 
     navigation.navigate("Main", { preguntaId: pp });
   };
+
+  Object.entries(pregunta).forEach((key, value) => console.log(key, value));
 
   return (
     <View style={styles.margin} key={pregunta.id}>
@@ -44,37 +63,21 @@ const Respuestas = ({ pregunta, selected, random }) => {
         >
           {pregunta.pregunta}
         </StyledText>
-
-        <View style={[styles.container, color("a")]}>
-          <StyledText style={[styles.texto]}>{"a. " + pregunta.a}</StyledText>
-        </View>
-        <View style={[styles.container, color("b")]}>
-          <StyledText style={styles.texto}>{"b. " + pregunta.b}</StyledText>
-        </View>
-        <View style={[styles.container, color("c")]}>
-          <StyledText style={styles.texto}>{"c. " + pregunta.c}</StyledText>
-        </View>
-        <View style={styles.fixToText}>
-          <Pressable
-            onPress={next}
-            style={({ pressed }) => [
-              {
-                backgroundColor: pressed ? "rgb(210, 230, 255)" : "white",
-              },
-              styles.wrapperCustom,
-            ]}
-          >
-            <StyledText
-              color="blue"
-              fontSize="subheading"
-              fontWeight="bold"
-              style={styles.pregunta}
-            >
-              Siguiente
-            </StyledText>
-          </Pressable>
-        </View>
       </ScrollView>
+
+      {Object.entries(pregunta).slice(2,6).map(( [key,value], index) => (
+        <Text>
+         {key} ---- {value} - {index}
+        </Text>
+      ))}
+
+      {/* <VirtualizedList
+        initialNumToRender={4}
+        renderItem={({item}) => <Item title={item.title} />}
+        keyExtractor={item => item.id}
+        getItemCount={getItemCount}
+        getItem={getItem}
+      /> */}
     </View>
   );
 };

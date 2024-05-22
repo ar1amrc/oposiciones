@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Alert,
   Image,
@@ -7,11 +7,10 @@ import {
   Switch,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getUser, updateNameUser, updateRandomUser } from "../database/db";
+import { getUser, updateNameUser, updateRandomUser, updateStatsUser } from "../database/db";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import StyledText from "../components/StyledText";
 
@@ -32,6 +31,13 @@ const Settings = () => {
     fetchUser();
   }, []);
 
+  const resetStats = () => { 
+    setUser(prevState=> {
+      return { ...prevState, correctas:0, fallidas:0, porciento:0}
+    })
+    updateStatsUser(0,0,0)
+  }
+
   const toggleSwitch = () => {
     updateRandomUser(!isEnabled ? 1 : 0);
     setIsEnabled((previousState) => !previousState);
@@ -45,7 +51,7 @@ const Settings = () => {
   const navigate = (event) => {
     const page = Number(event.replace(/\D/gm, ""));
 
-    if (page > 400)
+    if (page > 540)
         Alert.alert('Pregunta inválida', 'Solo existen 400 preguntas')
     else
      navigation.navigate("Main", { preguntaId: page });
@@ -136,6 +142,15 @@ const Settings = () => {
                 % aciertos
               </StyledText>
             </View>
+            <Pressable onPress={resetStats} style={({pressed}) => [
+          {
+            backgroundColor: pressed ? 'rgb(210, 230, 255)' : '#FAE5D3',
+            borderRadius:33
+          },
+         
+        ]}>
+                <StyledText> Reset </StyledText>
+            </Pressable>
           </View>
         </View>
       </View>

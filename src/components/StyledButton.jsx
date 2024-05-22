@@ -8,16 +8,12 @@ const StyledButton = ({ text, pressFn }) => {
         onPress={pressFn}
         style={({ pressed }) => [
           {
-            backgroundColor: pressed ? "rgb(210, 230, 255)" : "white",
+            backgroundColor: pressed ? "rgb(210, 230, 255)" : "#D3EEF9",
           },
           styles.wrapperCustom,
         ]}
       >
-        <StyledText
-          fontSize="subheading"
-          fontWeight="bold"
-          style={styles.pregunta}
-        >
+        <StyledText fontSize="subheading" fontWeight="bold">
           {text}
         </StyledText>
       </Pressable>
@@ -26,21 +22,19 @@ const StyledButton = ({ text, pressFn }) => {
 };
 
 const styles = StyleSheet.create({
-    pregunta: {
-      marginBottom: 10,
-    },
-    fixToText: {
-      flexDirection: "row",
-      justifyContent: "center",
-    },
-    wrapperCustom: {
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: "black",
-      padding: 6,
-      backgroundColor: "#FAE5D3",
-    },
-  });
-  
+  fixToText: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  wrapperCustom: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    elevation: 5,
+    // backgroundColor: "#FAE5D3",
+  },
+});
 
 export default StyledButton;

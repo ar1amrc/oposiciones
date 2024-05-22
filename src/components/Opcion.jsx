@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 21,
     marginBottom: 10,
+    elevation: 3
   },
   texto: {
     paddingHorizontal: 10,
