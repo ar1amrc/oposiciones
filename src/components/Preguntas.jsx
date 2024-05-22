@@ -21,11 +21,11 @@ const initialState = {isLoading: true, isPressed:false, isSelected:false}
 const Preguntas = () => {
   const [pregunta, setPregunta] = useState(null);
   const [states, setStates] = useState(initialState);
-  const {isLoading, isSelected, isPressed} = states
-  const navigation = useNavigation();
   const {state:user, updateStatsUser} = useContext(UserContext)
-
-console.log(isLoading, isSelected, isPressed);
+  const navigation = useNavigation();
+  
+  const {isLoading, isSelected, isPressed} = states
+  
   const {
     params: { preguntaId },
   } = useRoute();
