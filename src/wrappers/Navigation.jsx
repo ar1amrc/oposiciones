@@ -15,7 +15,7 @@ const Navigation = () => {
             <Stack.Screen component={Main} name='Main' initialParams={{ preguntaId: 1 }} />
             <Stack.Screen component={Settings} name='Settings' options={{
                 presentation: "modal",
-                headerTitle: "Settings",
+                headerTitle: "Configuración",
                 headerShown: true,
             }} />
         </Stack.Navigator>

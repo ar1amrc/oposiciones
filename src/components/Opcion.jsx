@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet } from "react-native";
 import StyledText from "./StyledText";
 import theme from "../theme";
-import { useState } from "react";
 
 const Opcion = ({
   llave,

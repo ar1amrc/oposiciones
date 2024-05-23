@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  VirtualizedList,
 } from "react-native";
 import StyledText from "./StyledText";
 import theme from "../theme";

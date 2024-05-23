@@ -4,47 +4,77 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Text,
+  Vibration,
+  ToastAndroid,
 } from "react-native";
 import StyledText from "./StyledText";
 import Opcion from "./Opcion";
 import StyledButton from "./StyledButton";
 import theme from "../theme";
-import { getPregunta, getUser } from "../database/db";
+import { getPregunta } from "../database/db";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { UserContext } from "../context/user";
+import { badText, goodText, randomNumber, random_text } from "../utils";
 
-function randomNumber() {
-  return Math.floor(Math.random() * 540 + 1);
-}
-const initialState = {isLoading: true, isPressed:false, isSelected:false}
+const initialState = { isLoading: true, isPressed: false, isSelected: false };
+
 const Preguntas = () => {
   const [pregunta, setPregunta] = useState(null);
   const [states, setStates] = useState(initialState);
-  const {state:user, updateStatsUser} = useContext(UserContext)
+  const { state: user, updateStatsUser } = useContext(UserContext);
   const navigation = useNavigation();
-  
-  const {isLoading, isSelected, isPressed} = states
-  
+
+  const { isLoading, isSelected, isPressed } = states;
   const {
     params: { preguntaId },
   } = useRoute();
 
+  useEffect(() => {
+    getPregunta(preguntaId).then((value) => {
+      setPregunta(value);
+      const newState = {
+        isLoading: false,
+        isPressed: false,
+        isSelected: false,
+      };
+      setStates(newState);
+    });
+  }, [preguntaId]);
+
   const add = (key) => {
-    const newState = {...states, isSelected: key } 
+    const newState = { ...states, isSelected: key };
     setStates(newState);
   };
 
   const press = () => {
     if (!isSelected) return;
-    const newState = {...states, isPressed: true } 
+    const newState = { ...states, isPressed: true };
     setStates(newState);
-    updateStatsUser(pregunta.respuesta == isSelected);
+    const correcta = pregunta.respuesta == isSelected
+
+    if(user.notificaciones)
+      correcta ? ToastAndroid.showWithGravity(
+        random_text(goodText),
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      ) : ToastAndroid.showWithGravity(
+        random_text(badText),
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
+    if(user.vibraciones) 
+      correcta ? Vibration.vibrate([200, 100, 200]) : Vibration.vibrate(500);
+      
+    updateStatsUser(correcta);
   };
 
   const color = (key) => {
     if (key == pregunta.respuesta.toUpperCase()) return styles.ok;
-    if (key != pregunta.respuesta.toUpperCase() && key.toUpperCase() == isSelected) return styles.wrong;
+    if (
+      key != pregunta.respuesta.toUpperCase() &&
+      key.toUpperCase() == isSelected
+    )
+      return styles.wrong;
     else return styles.white;
   };
 
@@ -53,14 +83,6 @@ const Preguntas = () => {
     if (pp > 540) pp = 1;
     navigation.navigate("Main", { preguntaId: pp });
   };
-
-  useEffect(() => {
-    getPregunta(preguntaId).then((value) => {
-      setPregunta(value);
-      const newState = { isLoading: false, isPressed: false, isSelected: false } 
-      setStates(newState);
-    });
-  }, [preguntaId]);
 
   return (
     <View style={styles.margin}>
@@ -98,12 +120,12 @@ const Preguntas = () => {
                     disabled={true}
                   />
                 ))}
-              
+
               <StyledButton text={"Siguiente"} pressFn={next} />
             </>
           ) : (
             <>
-            {Object.entries(pregunta)
+              {Object.entries(pregunta)
                 .slice(2, 6)
                 .map(([keys, value], index) => (
                   <Opcion
@@ -118,7 +140,6 @@ const Preguntas = () => {
             </>
           )}
         </ScrollView>
-
       )}
     </View>
   );

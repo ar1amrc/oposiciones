@@ -1,5 +1,4 @@
 import * as SQLite from "expo-sqlite";
-import * as FileSystem from "expo-file-system";
 import {
   countPreguntas,
   countUser,
@@ -11,11 +10,12 @@ import {
   getUserQuery,
   insertPreguntas,
   insertUser,
+  updatNotificacionesUserQuery,
   updateNameUserQuery,
   updateRandomUserQuery,
   updateStatsUserQuery,
+  updateVibracionUserQuery,
 } from "./queries";
-import { Asset } from "expo-asset";
 
 function openDatabase() {
   const DB_NAME = "oposiciones.db";
@@ -97,7 +97,7 @@ const inserData = async () => {
 };
 
 export const createDatabase = async () => {
-  //await dropTables();
+  await dropTables();
   await createTables();
   await inserData();
 };
@@ -145,6 +145,28 @@ export const updateRandomUser = (random) => {
     tx.executeSql(
       updateRandomUserQuery,
       [random],
+      (txObj, results) => console.log(results),
+      (txObj, error) => console.log(error.message)
+    );
+  });
+};
+
+export const updateVibracionesUser = (vibrate) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      updateVibracionUserQuery,
+      [vibrate],
+      (txObj, results) => console.log(results),
+      (txObj, error) => console.log(error.message)
+    );
+  });
+};
+
+export const updateNoticifacionesUser = (notify) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      updatNotificacionesUserQuery,
+      [notify],
       (txObj, results) => console.log(results),
       (txObj, error) => console.log(error.message)
     );

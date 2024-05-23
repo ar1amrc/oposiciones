@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   fixToText: {
     flexDirection: "row",
     justifyContent: "center",
+    marginBottom: 3
   },
   wrapperCustom: {
     alignItems: "center",

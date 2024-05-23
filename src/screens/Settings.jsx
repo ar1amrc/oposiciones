@@ -1,148 +1,25 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext} from "react";
 import {
-    Alert,
-  Image,
-  Pressable,
   StyleSheet,
-  Switch,
-  Text,
-  TextInput,
   View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Feather, Ionicons } from "@expo/vector-icons";
-import StyledText from "../components/StyledText";
 import { UserContext } from "../context/user";
+import Stats from '../components/Stats'
+import SettingsMain from '../components/SettingsMain'
+import SettingsTriggers from '../components/SettingsTriggers'
 
 const Settings = () => {
-  const {state:user, updateStatsUser, updateRandomUser, updateNameUser,resetStatsUser} = useContext(UserContext)
-  const [currentName, setCurrentName] = useState(user.nombre);
-  const [edit, setEdit] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(user.random == 1 ? true : false);
-  const navigation = useNavigation();
-
-  const resetStats = () => { 
-    // setUser(prevState=> {
-    //   return { ...prevState, correctas:0, fallidas:0, porciento:0}
-    // })
-    resetStatsUser()
-  }
-
-  const toggleSwitch = () => {
-    updateRandomUser(!isEnabled ? 1 : 0);
-    setIsEnabled((previousState) => !previousState);
-  };
-
-  const update = () => {
-    updateNameUser(currentName);
-    setEdit(!edit);
-  };
-
-  const navigate = (event) => {
-    const page = Number(event.replace(/\D/gm, ""));
-
-    if (page > 540)
-        Alert.alert('Pregunta inválida', 'Solo existen 400 preguntas')
-    else
-     navigation.navigate("Main", { preguntaId: page });
-  };
-
+  const {
+    state: user
+  } = useContext(UserContext);
+  console.log(user);
   if (user)
     return (
       <View style={styles.container}>
         <View style={styles.margin}>
-          <View style={{ alignItems: "center", marginBottom: 50 }}>
-            <Image
-              source={require("../../assets/istockphoto.jpeg")}
-              style={{ width: 100, height: 100, borderRadius: 100 }}
-            />
-          </View>
-          {edit ? (
-            <View style={styles.nombre}>
-              <TextInput
-                value={currentName}
-                placeholder="Usuario"
-                onChangeText={setCurrentName}
-                onEndEditing={update}
-                style={styles.textInput}
-              />
-              <Pressable onPress={() => update()}>
-                <Feather name="send" size={24} color="black"></Feather>
-              </Pressable>
-            </View>
-          ) : (
-            <View style={styles.nombre}>
-              <Text> {currentName}</Text>
-              <Pressable onPress={() => setEdit(!edit)}>
-                <Feather name="edit-2" size={24} color="black"></Feather>
-              </Pressable>
-            </View>
-          )}
-
-          <View style={styles.nombre}>
-            <StyledText fontSize="subheading" fontWeight="bold">
-              Orden Aleatorio
-            </StyledText>
-            <Switch onValueChange={toggleSwitch} value={isEnabled}></Switch>
-          </View>
-          <View style={styles.nombre}>
-            <StyledText
-              fontSize="subheading"
-              fontWeight="bold"
-              color="blue"
-              onPress={(event) =>
-                navigation.navigate("Main", { preguntaId: 3 })
-              }
-            >
-              Ir a pregunta:
-            </StyledText>
-
-            <TextInput
-              placeholder="No."
-              keyboardType="numeric"
-              maxLength={3}
-              onEndEditing={(event) => navigate(event.nativeEvent.text)}
-              style={{
-                width: 40,
-                borderRadius: 100,
-                textAlign: "center",
-                borderWidth: 1,
-                borderColor: "black",
-              }}
-            />
-          </View>
-
-          <View style={[styles.nombre, { marginTop: 50 }]}>
-            <View style={{ alignItems: "center" }}>
-              <Text style={{ marginBottom: 5 }}>{user.correctas}</Text>
-              <StyledText fontSize="subheading" fontWeight="bold">
-                Correctas
-              </StyledText>
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Text style={{ marginBottom: 5 }}>{user.fallidas}</Text>
-              <StyledText fontSize="subheading" fontWeight="bold">
-                Incorrectas
-              </StyledText>
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Text style={{ marginBottom: 5 }}>
-                {Number(user.porciento).toFixed(2)}
-              </Text>
-              <StyledText fontSize="subheading" fontWeight="bold">
-                % aciertos
-              </StyledText>
-            </View>
-            <Pressable onPress={resetStats} style={({pressed}) => [
-          {
-            backgroundColor: pressed ? 'rgb(210, 230, 255)' : '#FAE5D3',
-            borderRadius:33
-          },
-         
-        ]}>
-                <StyledText> Reset </StyledText>
-            </Pressable>
-          </View>
+          <SettingsMain></SettingsMain>
+          <SettingsTriggers></SettingsTriggers>
+          <Stats></Stats>
         </View>
       </View>
     );
@@ -156,19 +33,7 @@ const styles = StyleSheet.create({
   },
   margin: {
     marginHorizontal: 25,
-  },
-  nombre: {
-    flexDirection: "row",
-    // flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-  },
-  textInput: {
-    borderRadius: 2,
-    borderWidth: 1,
-    borderColor: "gray",
-  },
+  }
 });
 
 export default Settings;

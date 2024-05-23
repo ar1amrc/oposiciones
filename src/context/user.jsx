@@ -1,11 +1,9 @@
 import {
   createContext,
   useEffect,
-  useLayoutEffect,
   useReducer,
-  useState,
 } from "react";
-import { getUser, updateNameUser, updateRandomUser, updateStatsUser } from "../database/db";
+import { getUser, updateNameUser, updateNoticifacionesUser, updateRandomUser, updateStatsUser, updateVibracionesUser } from "../database/db";
 async function fetchUsers() {
   return await getUser(1);
 }
@@ -35,7 +33,7 @@ const reducer = (state, action) => {
       const correctas = payload ? state.correctas + 1 : state.correctas;
       const fallidas = payload ? state.fallidas : state.fallidas + 1;
       const porciento = (correctas * 100) / (correctas + fallidas);
-    
+
       updateStatsUser(correctas, fallidas, porciento);
       
       const newState = {
@@ -57,6 +55,16 @@ const reducer = (state, action) => {
       updateRandomUser(payload);
       return newState;
     }
+    case "UPDATE_NOTIFY": {
+      const newState = { ...state, notificaciones: payload };
+      updateNoticifacionesUser(payload);
+      return newState;
+    }
+    case "UPDATE_VIBRATE": {
+      const newState = { ...state, vibraciones: payload };
+      updateVibracionesUser(payload);
+      return newState;
+    }
     case "UPDATE_NAME": {
       updateNameUser(payload);
       const newState = { ...state, nombre: payload };
@@ -76,6 +84,10 @@ export const Provider = ({ children }) => {
     dispatch({ type: "UPDATE_NAME", payload: name });
   const updateRandomUser = (random) =>
     dispatch({ type: "UPDATE_RANDOM", payload: random });
+  const updateNotificacionesUser = (notify) =>
+    dispatch({ type: "UPDATE_NOTIFY", payload: notify });
+  const updateVibracionesUser = (vibrate) =>
+    dispatch({ type: "UPDATE_VIBRATE", payload: vibrate });
 
   useEffect(() => {
     async function fetchData() {
@@ -93,6 +105,8 @@ export const Provider = ({ children }) => {
         resetStatsUser,
         updateNameUser,
         updateRandomUser,
+        updateNotificacionesUser,
+        updateVibracionesUser,
       }}
     >
       {children}

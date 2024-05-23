@@ -4,7 +4,7 @@ export const drop1 = 'DROP TABLE user';
 
 export const createPreguntaTable = "create table if not exists preguntas (id integer primary key not null, pregunta text, a text, b text, c text, d text, respuesta text);";
 
-export const createUserTable = "create table if not exists user (id integer primary key not null, nombre text, correctas int, fallidas int, porciento text, random int)";
+export const createUserTable = "create table if not exists user (id integer primary key not null, nombre text, correctas int, fallidas int, porciento text, random int, notificaciones int, vibraciones int)";
 
 export const countPreguntas = `SELECT COUNT(*) as count FROM preguntas`;
 export const countUser = `SELECT COUNT(*) as count FROM user`;
@@ -21,7 +21,7 @@ export const countUser = `SELECT COUNT(*) as count FROM user`;
 // ]
 
 
-export const insertUser = `INSERT INTO "user" VALUES (1, 'Jeni', 0, 0, '0', 0);`
+export const insertUser = `INSERT INTO "user" VALUES (1, 'Jeni', 0, 0, '0', 0, 1, 1);`
 
 export const getPreguntaQuery = 'SELECT * FROM preguntas WHERE id = ?';
 
@@ -29,6 +29,8 @@ export const getUserQuery = 'SELECT * FROM user WHERE id = ?';
 
 export const updateNameUserQuery = 'UPDATE "user" SET "nombre" = ? WHERE id = 1';
 export const updateRandomUserQuery = 'UPDATE "user" SET "random" = ? WHERE id = 1';
+export const updatNotificacionesUserQuery = 'UPDATE "user" SET "notificaciones" = ? WHERE id = 1';
+export const updateVibracionUserQuery = 'UPDATE "user" SET "vibraciones" = ? WHERE id = 1';
 export const updateStatsUserQuery = 'UPDATE "user" SET "correctas" = ?, "fallidas" = ?, "porciento" = ? WHERE id = 1'
 
 export const insertPreguntas = [
