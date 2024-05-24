@@ -56,14 +56,14 @@ const Preguntas = () => {
       correcta ? ToastAndroid.showWithGravity(
         random_text(goodText),
         ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM,
+        ToastAndroid.TOP,
       ) : ToastAndroid.showWithGravity(
         random_text(badText),
         ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM,
+        ToastAndroid.TOP,
       );
     if(user.vibraciones) 
-      correcta ? Vibration.vibrate([200, 100, 200]) : Vibration.vibrate(500);
+      correcta ? Vibration.vibrate(350) : Vibration.vibrate(700);
       
     updateStatsUser(correcta);
   };
