@@ -50,8 +50,8 @@ const Preguntas = () => {
     if (!isSelected) return;
     const newState = { ...states, isPressed: true };
     setStates(newState);
-    const correcta = pregunta.respuesta == isSelected
-
+    const correcta = pregunta.respuesta.toUpperCase() == isSelected
+ 
     if(user.notificaciones)
       correcta ? ToastAndroid.showWithGravity(
         random_text(goodText),
